@@ -4,31 +4,66 @@ package stepDefinitions;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import pageObjects.HomePage;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+
+
+import dataProviders.ConfigFileReader;
+import managers.PageObjectManager;
 
 public class Steps {
 	
-	WebDriver driver;	
+	WebDriver driver;
+	
+	ConfigFileReader configFileReader;
+	
+	HomePage homePage;
+	
+	PageObjectManager pageObjectManager;
+	
+	
 	
 	@Given("^user is on Home Page$")
 	public void user_is_on_Home_Page() throws Throwable {
+				
+		configFileReader = new ConfigFileReader();		
 		
 		System.setProperty("webdriver.edge.driver", 
-				"D:/MyJob/Testing/Selenium_Driver/edgedriver_win64/msedgedriver.exe");	
+				configFileReader.getDriverPath());	
+		
 		//Private mode
 		EdgeOptions edgeOptions = new EdgeOptions();
         edgeOptions.addArguments("-inprivate");
         driver = new EdgeDriver(edgeOptions); 
+        /*
+        System.setProperty("webdriver.chrome.driver", 
+				configFileReader.getDriverPath());
         
-        driver.get("https://magento.softwaretestingboard.com/");
+        //Private mode
+        ChromeOptions chromeOptions = new ChromeOptions();
+        //chromeOptions.addArguments("-incognito");
+        driver = new ChromeDriver(chromeOptions);
+		*/        
+        
+        pageObjectManager = new PageObjectManager(driver);
+        
+        //Created an Object of HomePage Class
+        homePage = pageObjectManager.getHomePage();
+        //Get Home
+        homePage.navigateTo_Home();
+        Thread.sleep(1000);
+        homePage.moveTabWomen();
+        
 	    // Write code here that turns the phrase above into concrete actions
 	    
 	}
 
-	@When("^he search for \"([^\"]*)\"$")
+	@When("^customer search for \"([^\"]*)\"$")
 	public void he_search_for(String arg1) throws Throwable {
 	    // Write code here that turns the phrase above into concrete actions
 	    
